@@ -12,44 +12,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tuts.security.models.User;
+import com.tuts.security.response.ResponseHandler;
 import com.tuts.security.services.UserService;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
     @Autowired
     UserService service;
 
+    @Autowired
+    ResponseHandler response;
+
     @PostMapping("/api/v1/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return new ResponseEntity<User>(service.create(user), HttpStatus.CREATED);
+    public ResponseEntity<Object> createUser(@RequestBody User user) {
+        service.saveUser(user);
+        return response.responseBuilder("User created Successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/api/v1/users")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(service.readAll());
+    public ResponseEntity<Object> getUsers() {
+        return response.responseBuilder(service.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/users/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.getOneById(id));
+    public ResponseEntity<Object> getUserById(@PathVariable Integer id) {
+        return response.responseBuilder(service.getOne(id),
+                HttpStatus.OK);
     }
 
     @PutMapping("/api/v1/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User data) {
-        return new ResponseEntity<User>(service.updateOne(id, data), HttpStatus.OK);
+    public ResponseEntity<Object> updateUser(@PathVariable Integer id, @RequestBody User data) {
+        service.update(id, data);
+        return response.responseBuilder("Success", service.update(id, data), HttpStatus.OK);
     }
 
     @DeleteMapping("/api/v1/users/{id}")
-    public ResponseEntity<Optional<User>> deleteUser(@PathVariable Integer id) {
-        if (service.getOneById(id) != null) {
-            service.delete(id);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<Object> deleteUser(@PathVariable Integer id) {
+        service.delete(id);
+        return response.responseBuilder("Success", HttpStatus.OK);
     }
 }
