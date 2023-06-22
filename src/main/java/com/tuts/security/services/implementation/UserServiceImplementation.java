@@ -1,10 +1,12 @@
 package com.tuts.security.services.implementation;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tuts.security.dto.UserRequest;
+import com.tuts.security.exceptions.UserNotFoundException;
 import com.tuts.security.models.User;
 import com.tuts.security.repository.UserRepository;
 import com.tuts.security.services.UserService;
@@ -19,48 +21,42 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User saveUser(User user) {
-
+    public User saveUser(UserRequest userRequest) {
+        User user = User.build(0, userRequest.getEmail(), userRequest.getPassword());
         return repository.save(user);
     }
 
     @Override
     public List<User> getAll() {
         List<User> list = repository.findAll();
-        if (!list.isEmpty()) {
+        if (list.isEmpty()) {
+            return null;
+        } else {
             return list;
         }
-        return null;
-
     }
 
     @Override
-    public User getOne(Integer id) {
+    public User getOne(Integer id) throws UserNotFoundException {
         return repository.findById(id).get();
     }
 
     @Override
-    public Optional<User> update(Integer id, User data) {
-        Optional<User> dbdetails = repository.findById(id);
-        if (dbdetails == null) {
-            return null;
-        } else {
-            User user = dbdetails.get();
-            user.setEmail(data.getEmail());
-            user.setPassword(data.getPassword());
-            repository.save(user);
-            return dbdetails;
-        }
+    public User update(Integer id, UserRequest userRequest) {
+        if (repository.findById(id).isEmpty())
+            throw new UserNotFoundException();
+        User user = repository.findById(id).get();
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+        repository.save(user);
+        return user;
     }
 
     @Override
     public String delete(Integer id) {
-        Optional<User> dbdetails = repository.findById(id);
-        if (dbdetails == null) {
-            return null;
-        } else {
-            repository.deleteById(id);
-        }
+        if (repository.findById(id).isEmpty())
+            throw new UserNotFoundException();
+        repository.deleteById(id);
         return "Success";
     }
 }

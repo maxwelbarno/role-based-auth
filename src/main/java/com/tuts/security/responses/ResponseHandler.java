@@ -1,4 +1,4 @@
-package com.tuts.security.response;
+package com.tuts.security.responses;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,32 +8,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Component
 public class ResponseHandler {
 
-    private ResponseEntity<Object> buildResponseEntity(Response response) {
+    private ResponseEntity<Object> buildResponseEntity(CustomResponse response) {
         return new ResponseEntity<Object>(response, response.getStatus());
     }
 
     @RequestMapping
     public ResponseEntity<Object> responseBuilder(String message, Object responseObject, HttpStatus httpStatus) {
-
-        Response response = new Response();
-        response.setMessage(message);
-        response.setData(responseObject);
-        response.setStatus(httpStatus);
-
-        return buildResponseEntity(response);
+        return buildResponseEntity(new CustomResponse(message, responseObject, httpStatus));
     }
 
     @RequestMapping
     public ResponseEntity<Object> responseBuilder(String message, HttpStatus httpStatus) {
-
-        Response response = new Response();
-        response.setMessage(message);
-        response.setStatus(httpStatus);
-        return buildResponseEntity(response);
+        return buildResponseEntity(new CustomResponse(message, httpStatus));
     }
 
     @RequestMapping
     public ResponseEntity<Object> responseBuilder(Object responseObject, HttpStatus httpStatus) {
-        return buildResponseEntity(new Response(responseObject, httpStatus));
+        return buildResponseEntity(new CustomResponse(responseObject, httpStatus));
     }
 }
