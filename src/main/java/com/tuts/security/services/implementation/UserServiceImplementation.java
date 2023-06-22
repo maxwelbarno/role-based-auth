@@ -2,9 +2,7 @@ package com.tuts.security.services.implementation;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.tuts.security.dto.UserRequest;
 import com.tuts.security.exceptions.UserNotFoundException;
 import com.tuts.security.models.User;
