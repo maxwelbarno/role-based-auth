@@ -11,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.tuts.security.responses.CustomErrorResponse;
 
@@ -78,6 +79,15 @@ public class ApplicationExceptionHandler {
 
         CustomErrorResponse response = new CustomErrorResponse(
                 HttpStatus.BAD_REQUEST, errors);
+
+        return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException exception) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                exception.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
     }

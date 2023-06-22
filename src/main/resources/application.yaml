@@ -6,6 +6,22 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     default-property-inclusion: NON_NULL
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    root: INFO
+    com:
+      tuts: DEBUG
+  file:
+    name: error.log
+  pattern:
+    console: |
+      %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} %clr([%level]){magenta} %c{1.} [%t] %m%n
+    file: |
+      %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} [%level] %c{1.} [%t] %m%n
 
   jpa:
     hibernate:

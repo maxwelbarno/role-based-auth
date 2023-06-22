@@ -1,5 +1,7 @@
 package com.tuts.security.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
+    Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService service;
 
@@ -43,7 +47,8 @@ public class UserController {
     }
 
     @PutMapping("/api/v1/users/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Integer id, @Valid UserRequest userRequest) {
+    public ResponseEntity<Object> updateUser(@PathVariable Integer id, @RequestBody @Valid UserRequest userRequest) {
+
         service.update(id, userRequest);
         return response.responseBuilder("Success", service.update(id, userRequest), HttpStatus.OK);
     }
