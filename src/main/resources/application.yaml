@@ -4,8 +4,18 @@ spring:
     username: admin
     password: admin123
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format-sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
   jackson:
     default-property-inclusion: NON_NULL
+
   output:
     ansi:
       enabled: always
@@ -19,15 +29,10 @@ logging:
     name: error.log
   pattern:
     console: |
-      %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} %clr([%level]){magenta} %c{1.} [%t] %m%n
+      %clr(%d{HH:mm:ss.SSS}){green} %clr([%level]){magenta} %c{1.} [%t] %m%n
     file: |
       %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} [%level] %c{1.} [%t] %m%n
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format-sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+app:
+  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-expiration-milliseconds: 604800000

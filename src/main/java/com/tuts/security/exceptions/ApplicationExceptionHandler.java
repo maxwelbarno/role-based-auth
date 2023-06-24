@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -86,6 +87,14 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException exception) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                exception.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         CustomErrorResponse response = new CustomErrorResponse(
                 exception.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
 

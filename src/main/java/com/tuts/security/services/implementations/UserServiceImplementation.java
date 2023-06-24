@@ -1,10 +1,14 @@
-package com.tuts.security.services.implementation;
+package com.tuts.security.services.implementations;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.tuts.security.dto.UserRequest;
 import com.tuts.security.exceptions.UserNotFoundException;
 import com.tuts.security.models.User;
@@ -16,15 +20,20 @@ public class UserServiceImplementation implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImplementation.class);
 
+    @Autowired
     UserRepository repository;
+
+    @Lazy
+    @Autowired
+    private PasswordEncoder encoder;
 
     public UserServiceImplementation(UserRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public User saveUser(UserRequest userRequest) {
-        User user = User.build(0, userRequest.getEmail(), userRequest.getPassword());
+    public User saveUser(UserRequest req) {
+        User user = User.build(0, req.getEmail(), encoder.encode(req.getPassword()), req.getRoles());
         return repository.save(user);
     }
 
