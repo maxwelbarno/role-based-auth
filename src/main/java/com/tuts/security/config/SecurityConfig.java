@@ -31,7 +31,7 @@ public class SecurityConfig {
     private AuthEntryPoint authEntryPoint;
 
     @Autowired
-    private AuthHeaderFilter authHeaderFilter;
+    private RequestHeaderFilter authHeaderFilter;
 
     @Bean
     public static PasswordEncoder encoder() {

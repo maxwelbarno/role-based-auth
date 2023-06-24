@@ -17,12 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthHeaderFilter extends OncePerRequestFilter {
+public class RequestHeaderFilter extends OncePerRequestFilter {
 
     private JwtTokenProvider jwtTokenProvider;
     private UserDetailsService userDetailsService;
 
-    public AuthHeaderFilter(JwtTokenProvider provider, UserDetailsService service) {
+    public RequestHeaderFilter(JwtTokenProvider provider, UserDetailsService service) {
         this.jwtTokenProvider = provider;
         this.userDetailsService = service;
     }
@@ -39,7 +39,7 @@ public class AuthHeaderFilter extends OncePerRequestFilter {
             // Get username from Token
             String username = jwtTokenProvider.getUsernameClaim(token);
 
-            // Load User in the token claim
+            // Load User from the token claim
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
