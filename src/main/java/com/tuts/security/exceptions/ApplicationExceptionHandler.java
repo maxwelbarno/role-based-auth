@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -100,4 +102,22 @@ public class ApplicationExceptionHandler {
 
         return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException exception) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+
+        return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(
+            AccessDeniedException exception) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                exception.getLocalizedMessage(), HttpStatus.FORBIDDEN);
+
+        return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+    }
+
 }
