@@ -45,7 +45,7 @@
   margin-bottom: 40px;
 }
 
-.form-row input[type="button"],
+.form-row input[type="submit"],
 .form-row input[type="password"],
 .form-row input[type="text"],
 .form-row input[type="email"] {
@@ -60,7 +60,7 @@
   transition: 0.1s;
 }
 
-.form-row input[type="button"] {
+.form-row input[type="submit"] {
   color: #4a4d4f;
   border: 2px solid transparent;
   background: #f5e5bc;
@@ -76,7 +76,7 @@
   margin-bottom: 12px;
 }
 
-input[type="button"]:hover {
+input[type="submit"]:hover {
   color: #fff;
   background: goldenrod;
   cursor: pointer;
@@ -94,7 +94,7 @@ input[type="button"]:hover {
     margin-bottom: 20px;
   }
 
-  .form-row input[type="button"],
+  .form-row input[type="submit"],
   .form-row input[type="password"],
   .form-row input[type="email"],
   .form-row input[type="text"] {
