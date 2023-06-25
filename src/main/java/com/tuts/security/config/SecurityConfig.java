@@ -41,8 +41,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                // .authorizeHttpRequests(
-                // auth -> auth.anyRequest().permitAll())
                 .authorizeHttpRequests(
                         authorize -> authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                                 .requestMatchers("/api/v1/auth/**").permitAll()
@@ -51,8 +49,7 @@ public class SecurityConfig {
                 ).exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(cors -> cors.disable());
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(authHeaderFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
