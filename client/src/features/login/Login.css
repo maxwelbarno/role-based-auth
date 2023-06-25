@@ -79,6 +79,7 @@
 input[type="button"]:hover {
   color: #fff;
   background: goldenrod;
+  cursor: pointer;
 }
 
 @media screen and (min-width: 768px) {
