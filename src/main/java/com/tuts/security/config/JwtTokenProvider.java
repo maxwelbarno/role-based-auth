@@ -2,11 +2,13 @@ package com.tuts.security.config;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -29,12 +31,15 @@ public class JwtTokenProvider {
 
     // Generate JWT Token
     public String generateToken(Authentication authentication) {
+        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(", "));
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         String token = Jwts.builder()
                 .setSubject(username)
+                .claim("roles", authorities)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key())
