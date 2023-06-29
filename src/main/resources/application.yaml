@@ -35,4 +35,7 @@ logging:
 
 app:
   jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
-  jwt-expiration-milliseconds: 604800000
+  # jwt-expiration-milliseconds: 604800000
+  jwt-expiration-milliseconds: 30000
+
+  jwt-refresh-expiration-milliseconds: 7776000000

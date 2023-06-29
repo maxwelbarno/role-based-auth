@@ -1,6 +1,10 @@
-import "./Login.css";
 import { useState } from "react";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
+import { storeTokenInLocalStorage } from "../../lib/common";
+
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
@@ -13,8 +17,17 @@ const Login = () => {
         },
         body: JSON.stringify(credentials),
       });
+
       const data = await res.json();
-      return data;
+
+      console.log(data);
+
+      const { accessToken } = data;
+
+      if (accessToken) {
+        storeTokenInLocalStorage(accessToken);
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.log(error);
     }
