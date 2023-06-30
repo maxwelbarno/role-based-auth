@@ -20,7 +20,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -94,8 +93,6 @@ public class JwtProvider {
             return true;
         } catch (SignatureVerificationException e) {
             log.error("Invalid JWT Token: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            log.error("JWT Token is Unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             log.error("JWT Claims String is Empty: {}", e.getMessage());
         } catch (AlgorithmMismatchException e) {
