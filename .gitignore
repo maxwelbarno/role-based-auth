@@ -40,3 +40,4 @@ build/
 ### LOG FILE ###
 error.log
 error.log.*
+env.properties
