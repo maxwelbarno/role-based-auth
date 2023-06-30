@@ -15,4 +15,6 @@ public interface UserService {
     public User update(Integer userId, UserRequest userRequest);
 
     public String delete(Integer userId);
+
+    void addRoleToUser(String username, String roleName);
 }

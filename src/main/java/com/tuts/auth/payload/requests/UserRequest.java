@@ -1,6 +1,7 @@
 package com.tuts.auth.payload.requests;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.tuts.auth.models.Role;
 
@@ -14,10 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRequest {
     @NotBlank
-    private String email;
+    private String name;
+
+    @NotBlank
+    private String username;
 
     @NotBlank
     private String password;
 
-    private Set<Role> roles;
+    private Collection<Role> roles = new ArrayList<>();
 }

@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tuts.auth.payload.requests.AddRoleToUserRequest;
 import com.tuts.auth.payload.requests.UserRequest;
 import com.tuts.auth.payload.responses.ResponseHandler;
 import com.tuts.auth.services.UserService;
@@ -22,6 +24,7 @@ import com.tuts.auth.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api/v1")
 @CrossOrigin
 public class UserController {
     Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -32,34 +35,43 @@ public class UserController {
     @Autowired
     ResponseHandler response;
 
-    @PostMapping("/api/v1/users")
+    @PostMapping("/users")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) {
         service.saveUser(userRequest);
         return response.responseBuilder("User created Successfully", HttpStatus.CREATED);
     }
 
-    // @CrossOrigin(origins = "http://localhost:3000/dashboard", allowCredentials =
-    // "true")
-    @GetMapping("/api/v1/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/users/addRole")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<Object> addRole(@RequestBody @Valid AddRoleToUserRequest req) {
+        service.addRoleToUser(req.getUsername(), req.getRoleName());
+        return response.responseBuilder("Role added to user Successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Object> getUsers() {
         return response.responseBuilder("Success", service.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/users/{id}")
+    @GetMapping("/users/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Object> getUserById(@PathVariable Integer id) {
         return response.responseBuilder("Success", service.getOne(id),
                 HttpStatus.OK);
     }
 
-    @PutMapping("/api/v1/users/{id}")
+    @PutMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> updateUser(@PathVariable Integer id, @RequestBody @Valid UserRequest userRequest) {
 
         service.update(id, userRequest);
         return response.responseBuilder("Success", service.update(id, userRequest), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/v1/users/{id}")
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> deleteUser(@PathVariable Integer id) {
         service.delete(id);
         return response.responseBuilder("Success", HttpStatus.OK);

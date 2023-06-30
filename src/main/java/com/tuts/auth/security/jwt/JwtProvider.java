@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class JwtTokenProvider {
+public class JwtProvider {
 
     @Value("${app.jwt-secret}")
     private String jwtSecret;

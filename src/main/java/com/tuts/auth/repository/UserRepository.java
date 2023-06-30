@@ -7,7 +7,7 @@ import com.tuts.auth.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findUserByEmail(String email);
+    User findUserByUsername(String username);
 
-    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
 }

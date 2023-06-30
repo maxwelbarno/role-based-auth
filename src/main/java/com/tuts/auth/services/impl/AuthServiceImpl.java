@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.tuts.auth.payload.requests.AuthRequest;
 import com.tuts.auth.repository.UserRepository;
-import com.tuts.auth.security.jwt.JwtTokenProvider;
+import com.tuts.auth.security.jwt.JwtProvider;
 import com.tuts.auth.services.AuthService;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder encoder;
 
     @Autowired
-    JwtTokenProvider provider;
+    JwtProvider provider;
 
     @Override
     public Map<String, String> login(AuthRequest req) {

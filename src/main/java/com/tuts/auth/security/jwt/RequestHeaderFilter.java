@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestHeaderFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenProvider provider;
+    private JwtProvider provider;
 
     @Autowired
     private UserServiceImpl service;

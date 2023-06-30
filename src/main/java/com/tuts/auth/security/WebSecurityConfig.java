@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +25,7 @@ import lombok.Data;
 @Configuration
 @AllArgsConstructor
 @Data
+@EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
@@ -40,14 +42,20 @@ public class WebSecurityConfig {
     public static PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(
-                authorize -> authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll());
+                authorize -> authorize.requestMatchers("/api/v1/auth/**").permitAll());
+
+        http.authorizeHttpRequests(
+                authorize -> authorize.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll());
+
+        http.authorizeHttpRequests(
+                authorize -> authorize.requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll());
+
         http.authorizeHttpRequests(
                 authorize -> authorize.anyRequest().authenticated());
 
