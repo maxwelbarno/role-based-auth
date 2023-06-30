@@ -1,6 +1,7 @@
 spring:
   config:
     import: file:env.properties
+
   datasource:
     url: jdbc:mysql://localhost:3306/${DB}
     username: ${DB_USER}
@@ -36,7 +37,7 @@ logging:
       %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} [%level] %c{1.} [%t] %m%n
 
 app:
-  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-secret: ${JWT_SECRET}
   jwt-expiration-milliseconds: 120000
 
   jwt-refresh-expiration-milliseconds: 7776000000
