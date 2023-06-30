@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Map<String, String> login(AuthRequest req) {
         Authentication auth = authManager
-                .authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
