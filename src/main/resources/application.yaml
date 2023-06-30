@@ -28,8 +28,7 @@ logging:
     root: INFO
     com:
       tuts: DEBUG
-  file:
-    name: error.log
+
   pattern:
     console: |
       %clr(%d{HH:mm:ss.SSS}){green} %clr([%level]){magenta} %c{1.} [%t] %m%n
