@@ -3,11 +3,9 @@ package com.tuts.auth.security.jwt;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -17,7 +15,7 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.tuts.auth.repository.UserRepository;
+import com.tuts.auth.services.impl.UserDetailsImpl;
 
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -27,9 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class JwtProvider {
-
-    @Autowired
-    private UserRepository usersDB;
 
     @Value("${app.jwt-secret}")
     private String jwtSecret;
@@ -43,8 +38,7 @@ public class JwtProvider {
     // Generate JWT Token
     public Map<String, String> generateToken(Authentication authentication) {
 
-        User user = (User) authentication.getPrincipal();
-        String name = usersDB.findUserByUsername(user.getUsername()).getName();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
 
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(", "));
@@ -56,7 +50,7 @@ public class JwtProvider {
         String access = JWT.create()
                 .withSubject(user.getUsername())
                 .withClaim("roles", authorities)
-                .withClaim("name", name)
+                .withClaim("name", user.getName())
                 .withExpiresAt(expireDate)
                 .sign(getAlgorithm());
 
