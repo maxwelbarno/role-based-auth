@@ -1,23 +1,16 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  const [jwt, setJwt] = useState(() => {
-    localStorage.getItem("jwt")
-      ? JSON.parse(localStorage.getItem("jwt"))
-      : null;
-  });
+  const [jwt, setJwt] = useLocalStorage("jwt");
 
-  const [user, setUser] = useState(() => {
-    localStorage.getItem("jwt")
-      ? JSON.parse(localStorage.getItem("jwt"))
-      : null;
-  });
+  const [user, setUser] = useState();
 
   const userLogin = async (event) => {
     event.preventDefault();
@@ -36,8 +29,6 @@ export const AuthProvider = ({ children }) => {
 
       // Set user using decoded JWT
       setUser(jwt_decode(data.accessToken));
-
-      localStorage.setItem("accessToken", JSON.stringify(data));
       navigate("/");
     }
   };
@@ -45,7 +36,6 @@ export const AuthProvider = ({ children }) => {
   const userLogout = () => {
     setJwt(null);
     setUser(null);
-    localStorage.removeItem("accessToken");
     navigate("/login");
   };
 
