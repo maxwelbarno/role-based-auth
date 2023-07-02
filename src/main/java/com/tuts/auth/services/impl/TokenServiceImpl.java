@@ -24,7 +24,7 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private UserRepository usersDB;
 
-    @Value("${db-stored-token-millisecond}")
+    @Value("${application.db-stored-token-milliseconds}")
     private Integer tokenDuration;
 
     public Token fetchTokenFromDB(String token) {
