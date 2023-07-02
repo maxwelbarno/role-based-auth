@@ -22,13 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtProvider {
 
-    @Value("${app.jwt-secret}")
+    @Value("${application.jwt-secret}")
     private String jwtSecret;
 
-    @Value("${app.jwt-expiration-milliseconds}")
+    @Value("${application.jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
-    @Value("${app.jwt-refresh-expiration-milliseconds}")
+    @Value("${application.jwt-refresh-expiration-milliseconds}")
     private long jwtRefreshExpirationDate;
 
     public String generateJwtRefresh(String username) {

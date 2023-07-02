@@ -120,4 +120,13 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<Object> handleRefreshTokenException(
+            RefreshTokenException exception) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                exception.getLocalizedMessage(), HttpStatus.FORBIDDEN);
+
+        return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
+    }
+
 }

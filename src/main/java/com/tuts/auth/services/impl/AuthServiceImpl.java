@@ -11,15 +11,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tuts.auth.exceptions.RefreshTokenException;
+import com.tuts.auth.models.Token;
 import com.tuts.auth.models.User;
 import com.tuts.auth.payload.requests.AuthRequest;
+import com.tuts.auth.payload.requests.TokenRequest;
 import com.tuts.auth.repository.UserRepository;
 import com.tuts.auth.security.jwt.JwtProvider;
 import com.tuts.auth.services.AuthService;
+import com.tuts.auth.services.TokenService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 @Service
 @Data
 @AllArgsConstructor
@@ -28,7 +31,10 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authManager;
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userDB;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -45,13 +51,47 @@ public class AuthServiceImpl implements AuthService {
 
         User user = (User) auth.getPrincipal();
 
+        // Generate JWT
         String jwt = provider.generateJwt(user);
-        String refreshJwt = provider.generateJwtRefresh(user.getUsername());
 
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("access", jwt);
-        tokenMap.put("refresh", refreshJwt);
-        return tokenMap;
+        // Get logged in user from DB
+        User dbUser = userDB.findUserByUsername(user.getUsername());
+
+        Integer userId = dbUser.getId();
+
+        // Revoke existing user refresh token in the DB
+        tokenService.revokeToken(userId);
+
+        String refreshToken = tokenService.generateToken(userId).getToken();
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access", jwt);
+        tokens.put("refresh", refreshToken);
+        return tokens;
+    }
+
+    @Override
+    public String getRefreshToken(TokenRequest req) {
+
+        String token = req.getToken();
+
+        if (!token.isEmpty()) {
+            try {
+
+                Token storedToken = tokenService.fetchTokenFromDB(token);
+
+                tokenService.verifyTokenExpiry(storedToken);
+                User user = storedToken.getUser();
+                String username = user.getUsername();
+                String refreshToken = provider.generateJwtRefresh(username);
+                return refreshToken;
+            } catch (RefreshTokenException e) {
+                throw new RefreshTokenException(e.getMessage());
+            }
+
+        }
+        return null;
+
     }
 
 }

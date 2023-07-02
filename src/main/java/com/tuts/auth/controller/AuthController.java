@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tuts.auth.payload.requests.AuthRequest;
+import com.tuts.auth.payload.requests.TokenRequest;
 import com.tuts.auth.payload.responses.JwtAuthResponse;
 import com.tuts.auth.payload.responses.ResponseHandler;
 import com.tuts.auth.services.AuthService;
@@ -32,6 +33,16 @@ public class AuthController {
         JwtAuthResponse res = new JwtAuthResponse();
         res.setAccessToken(tokens.get("access"));
         res.setRefreshToken(tokens.get("refresh"));
+
+        return response.responseBuilder("Success", res, HttpStatus.OK);
+    }
+
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<Object> refresh(@RequestBody TokenRequest req) {
+        String refreshToken = service.getRefreshToken(req);
+
+        JwtAuthResponse res = new JwtAuthResponse();
+        res.setRefreshToken(refreshToken);
 
         return response.responseBuilder("Success", res, HttpStatus.OK);
     }

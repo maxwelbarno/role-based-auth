@@ -32,14 +32,14 @@ public class User implements UserDetails {
     private String name;
     private String username;
     private String password;
-    
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    
-    public User(String name, String username, String password, List<GrantedAuthority> authorities) {
+    public User(Integer id, String name, String username, String password, List<GrantedAuthority> authorities) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.password = password;
@@ -50,7 +50,7 @@ public class User implements UserDetails {
     public static User getUserDetails(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-        return new User(user.getName(), user.getUsername(), user.getPassword(), authorities);
+        return new User(user.getId(), user.getName(), user.getUsername(), user.getPassword(), authorities);
     }
 
     public String getName() {
