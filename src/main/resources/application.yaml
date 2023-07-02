@@ -35,8 +35,9 @@ logging:
     file: |
       %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} [%level] %c{1.} [%t] %m%n
 
-app:
+application:
   jwt-secret: ${JWT_SECRET}
   jwt-expiration-milliseconds: 120000
 
   jwt-refresh-expiration-milliseconds: 7776000000
+  db-stored-token-milliseconds: 60000
