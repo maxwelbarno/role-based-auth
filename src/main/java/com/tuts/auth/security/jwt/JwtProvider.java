@@ -1,10 +1,6 @@
 package com.tuts.auth.security.jwt;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +11,7 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.tuts.auth.services.impl.UserDetailsImpl;
+import com.tuts.auth.models.User;
 
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -35,35 +31,26 @@ public class JwtProvider {
     @Value("${app.jwt-refresh-expiration-milliseconds}")
     private long jwtRefreshExpirationDate;
 
-    // Generate JWT Token
-    public Map<String, String> generateToken(Authentication authentication) {
-
-        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
-
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(", "));
+    public String generateJwtRefresh(String username) {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
-        Date refreshExpireDate = new Date(currentDate.getTime() +
-                jwtRefreshExpirationDate);
-
-        String access = JWT.create()
-                .withSubject(user.getUsername())
-                .withClaim("roles", authorities)
-                .withClaim("name", user.getName())
+        return JWT.create()
+                .withSubject(username)
                 .withExpiresAt(expireDate)
                 .sign(getAlgorithm());
+    }
 
-        String refresh = JWT.create()
+    public String generateJwt(User user) {
+        Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+        String authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(", "));
+        return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(refreshExpireDate)
+                .withClaim("name", user.getName())
+                .withClaim("roles", authorities)
+                .withExpiresAt(expireDate)
                 .sign(getAlgorithm());
-
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access", access);
-        tokens.put("refresh", refresh);
-
-        return tokens;
     }
 
     private Algorithm getAlgorithm() {

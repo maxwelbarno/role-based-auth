@@ -1,11 +1,8 @@
 package com.tuts.auth.services.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,24 +44,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.info("User found in the database: {} ", username);
         }
 
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        // Loop over the roles of the user and create a SimpleGrantAuthority by passing
-        // in the role name and add it to the authorities list
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
-
-        // return new
-        // org.springframework.security.core.userdetails.User(user.getUsername(),
-        // user.getPassword(),
-        // authorities);
-
-        return UserDetailsImpl.create(user);
+        return User.getUserDetails(user);
     }
 
     @Override
     public User saveUser(UserRequest req) {
-        User user = User.build(0, req.getName(), req.getUsername(), encoder.encode(req.getPassword()), req.getRoles());
+        User user = User.build(0, req.getName(), req.getUsername(), encoder.encode(req.getPassword()), req.getRoles(),
+                null);
         return usersDB.save(user);
     }
 

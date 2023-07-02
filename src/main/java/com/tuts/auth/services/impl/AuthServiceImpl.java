@@ -1,5 +1,6 @@
 package com.tuts.auth.services.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tuts.auth.models.User;
 import com.tuts.auth.payload.requests.AuthRequest;
 import com.tuts.auth.repository.UserRepository;
 import com.tuts.auth.security.jwt.JwtProvider;
@@ -41,7 +43,14 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        Map<String, String> tokenMap = provider.generateToken(auth);
+        User user = (User) auth.getPrincipal();
+
+        String jwt = provider.generateJwt(user);
+        String refreshJwt = provider.generateJwtRefresh(user.getUsername());
+
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("access", jwt);
+        tokenMap.put("refresh", refreshJwt);
         return tokenMap;
     }
 
