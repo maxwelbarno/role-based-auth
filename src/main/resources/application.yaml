@@ -10,11 +10,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+    show-sql: true
     properties:
       hibernate:
         format-sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
 
   jackson:
     default-property-inclusion: NON_NULL
