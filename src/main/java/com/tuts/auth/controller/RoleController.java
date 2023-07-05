@@ -30,7 +30,7 @@ public class RoleController {
     ResponseHandler response;
 
     @PostMapping("/roles")
-    // @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public ResponseEntity<Object> createRole(@RequestBody @Valid RoleRequest req) {
         service.saveRole(req);
         return response.responseBuilder("Role created Successfully", HttpStatus.CREATED);

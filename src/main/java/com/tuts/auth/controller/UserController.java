@@ -36,7 +36,7 @@ public class UserController {
     ResponseHandler response;
 
     @PostMapping("/users/addRole")
-    // @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> addRole(@RequestBody @Valid AddRoleToUserRequest req) {
         service.addRoleToUser(req.getUsername(), req.getRoleName());
         return response.responseBuilder("Role added to user Successfully", HttpStatus.OK);
