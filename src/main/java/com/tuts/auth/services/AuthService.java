@@ -39,7 +39,7 @@ public class AuthService {
 
     public User register(UserRequest req) {
         User user = User.build(null, req.getName(), req.getUsername(), encoder.encode(req.getPassword()),
-                req.getRoles(), null);
+                null, null);
         var savedUser = usersDB.save(user);
         return savedUser;
     }
