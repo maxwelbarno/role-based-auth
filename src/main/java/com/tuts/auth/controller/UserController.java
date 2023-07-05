@@ -35,15 +35,8 @@ public class UserController {
     @Autowired
     ResponseHandler response;
 
-    @PostMapping("/users")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) {
-        service.saveUser(userRequest);
-        return response.responseBuilder("User created Successfully", HttpStatus.CREATED);
-    }
-
     @PostMapping("/users/addRole")
-    @PreAuthorize("hasAuthority('MANAGER')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Object> addRole(@RequestBody @Valid AddRoleToUserRequest req) {
         service.addRoleToUser(req.getUsername(), req.getRoleName());
         return response.responseBuilder("Role added to user Successfully", HttpStatus.OK);

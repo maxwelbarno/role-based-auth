@@ -1,4 +1,4 @@
-package com.tuts.auth.security.jwt;
+package com.tuts.auth.config.security;
 
 import java.io.IOException;
 import java.util.HashMap;
