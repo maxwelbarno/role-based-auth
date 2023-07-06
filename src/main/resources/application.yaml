@@ -41,7 +41,12 @@ logging:
       %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} [%level] %c{1.} [%t] %m%n
 
 application:
-  jwt-secret: ${JWT_SECRET}
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: 120000 #two minutes
+      refresh: 
+        expiration: 86400000 #one day
   jwt-expiration-milliseconds: 120000
 
   jwt-refresh-expiration-milliseconds: 7776000000

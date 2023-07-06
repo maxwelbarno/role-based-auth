@@ -1,8 +1,12 @@
 package com.tuts.auth.services;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +21,8 @@ import com.tuts.auth.repository.TokenRepository;
 import com.tuts.auth.repository.UserRepository;
 import com.tuts.auth.services.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -44,7 +50,7 @@ public class AuthService {
         return savedUser;
     }
 
-    public String authenticate(AuthRequest req) {
+    public Map<String, String> authenticate(AuthRequest req) {
         var user = usersDB.findUserByUsername(req.getUsername()).orElseThrow();
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
 
@@ -52,8 +58,12 @@ public class AuthService {
         revokeAllUserTokens(user);
 
         var jwt = jwtService.generateJwt(user);
+        var refreshJwt = jwtService.generateRefreshJwt(user);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access", jwt);
+        tokens.put("refresh", refreshJwt);
         saveUserToken(user, jwt);
-        return jwt;
+        return tokens;
     }
 
     private void saveUserToken(User user, String token) {
@@ -71,6 +81,33 @@ public class AuthService {
             token.setRevoked(true);
         });
         tokensDB.saveAll(validJwts);
+    }
+
+    public Map<String, String> refresh(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String authHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IOException(authHeader, null);
+        }
+
+        String refreshJwt = authHeader.substring(7);
+
+        String username = jwtService.getUsernameClaim(refreshJwt);
+
+        if (username != null) {
+            var user = usersDB.findUserByUsername(username).orElseThrow();
+
+            if (jwtService.isJwtValid(refreshJwt, user)) {
+                revokeAllUserTokens(user);
+                // Generate Access Token
+                var accessToken = jwtService.generateJwt(user);
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access", accessToken);
+                tokens.put("refresh", refreshJwt);
+                saveUserToken(user, accessToken);
+                return tokens;
+            }
+        }
+        throw new IOException(username, null);
     }
 
 }

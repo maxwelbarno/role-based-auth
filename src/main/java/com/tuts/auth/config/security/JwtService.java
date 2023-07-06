@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService {
 
-    @Value("${application.jwt-secret}")
+    @Value("${application.security.jwt.secret-key}")
     private String jwtSecret;
 
-    @Value("${application.jwt-expiration-milliseconds}")
-    private long jwtExpirationDate;
+    @Value("${application.security.jwt.expiration}")
+    private long expiration;
 
-    @Value("${application.jwt-refresh-expiration-milliseconds}")
-    private long jwtRefreshExpirationDate;
+    @Value("${application.security.jwt.refresh.expiration}")
+    private long refreshExpiration;
 
     public String getUsernameClaim(String jwt) {
         return JWT
@@ -37,7 +37,14 @@ public class JwtService {
         return JWT.create()
                 .withSubject(userDetails.getUsername())
                 .withClaim("authorities", authorities)
-                .withExpiresAt(new Date(System.currentTimeMillis() + jwtRefreshExpirationDate))
+                .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
+                .sign(getAlgorithm());
+    }
+
+    public String generateRefreshJwt(UserDetails userDetails) {
+        return JWT.create()
+                .withSubject(userDetails.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshExpiration))
                 .sign(getAlgorithm());
     }
 
