@@ -2,8 +2,6 @@ package com.tuts.auth.payload.responses;
 
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class CustomErrorResponse extends CustomResponse {
     private Map<String, String> errors;
 
-    public CustomErrorResponse(HttpStatus status, Map<String, String> errors) {
-        super(status);
+    public CustomErrorResponse(int statusCode, Map<String, String> errors) {
+        super(statusCode);
         this.errors = errors;
     }
 
-    public CustomErrorResponse(String message, HttpStatus status) {
-        super(message, status);
+    public CustomErrorResponse(String message, int statusCode) {
+        super(message, statusCode);
     }
 }

@@ -17,22 +17,22 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class RoleService {
     @Autowired
-    private RoleRepository rolesDB;
+    private RoleRepository rolesreRepository;
 
-    public Role saveRole(RoleRequest req) {
-        Role role = Role.build(0, req.getName());
-        return rolesDB.save(role);
+    public Role save(RoleRequest req) {
+        Role role = Role.build(null, req.getName(), null);
+        return rolesreRepository.save(role);
     }
 
-    public List<Role> findRoles() {
-        List<Role> list = rolesDB.findAll();
+    public List<Role> findAll() {
+        List<Role> list = rolesreRepository.findAll();
         if (list.isEmpty())
             return null;
         return list;
     }
 
     public Role findOne(String name) throws UserNotFoundException {
-        return rolesDB.findRoleByName(name);
+        return rolesreRepository.findRoleByName(name);
     }
 
 }

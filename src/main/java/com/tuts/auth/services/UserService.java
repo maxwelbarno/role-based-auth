@@ -3,6 +3,7 @@ package com.tuts.auth.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tuts.auth.exceptions.UserNotFoundException;
@@ -14,57 +15,58 @@ import com.tuts.auth.repository.UserRepository;
 import com.tuts.auth.services.UserService;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
+@Slf4j
 public class UserService {
 
     @Autowired
-    UserRepository usersDB;
+    UserRepository userRepository;
 
     @Autowired
-    RoleRepository rolesDB;
+    RoleRepository rolesRepository;
 
-    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User save(User data) {
+        User user = User.build(null, data.getName(), data.getUsername(), passwordEncoder.encode(data.getPassword()),
+                data.getRoles(), null);
+
+        log.info("ROLE", data.getRoles());
+
+        return userRepository.save(user);
+    }
+
     public List<User> getAll() {
-        List<User> list = usersDB.findAll();
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list;
-        }
+        return userRepository.findAll();
     }
 
-    
-    public User getOne(Integer id) throws UserNotFoundException {
-        return usersDB.findById(id).get();
+    public User findById(Integer id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user", id));
     }
 
-    
     public User update(Integer id, UserRequest req) {
 
-        if (usersDB.findById(id).isEmpty())
-            throw new UserNotFoundException();
-        User user = usersDB.findById(id).get();
-        user.setName(req.getName());
-        user.setUsername(req.getUsername());
-        user.setPassword(req.getPassword());
-        usersDB.save(user);
-        return user;
+        User old = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user", id));
+        old.setName(req.getName());
+        old.setUsername(req.getUsername());
+        old.setPassword(req.getPassword());
+        return userRepository.save(old);
     }
 
-    
     public String delete(Integer id) {
-        if (usersDB.findById(id).isEmpty())
+        if (userRepository.findById(id).isEmpty())
             throw new UserNotFoundException();
-        usersDB.deleteById(id);
+        userRepository.deleteById(id);
         return "Success";
     }
 
-    
     public void addRoleToUser(String username, String roleName) {
-        User user = usersDB.findUserByUsername(username).orElseThrow();
-        Role role = rolesDB.findRoleByName(roleName);
+        User user = userRepository.findByUsername(username).orElseThrow();
+        Role role = rolesRepository.findRoleByName(roleName);
         user.getRoles().add(role);
     }
 

@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.tuts.auth.config.security.JwtService;
+import com.tuts.auth.config.security.JwtProvider;
+import com.tuts.auth.exceptions.UserNotFoundException;
 import com.tuts.auth.models.Token;
 import com.tuts.auth.models.User;
 import com.tuts.auth.payload.requests.AuthRequest;
@@ -32,33 +34,34 @@ public class AuthService {
     private AuthenticationManager authManager;
 
     @Autowired
-    private UserRepository usersDB;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder encoder;
 
     @Autowired
-    private TokenRepository tokensDB;
+    private TokenRepository tokenRepository;
 
     @Autowired
-    JwtService jwtService;
+    JwtProvider jwtProvider;
 
     public User register(UserRequest req) {
         User user = User.build(null, req.getName(), req.getUsername(), encoder.encode(req.getPassword()),
                 null, null);
-        var savedUser = usersDB.save(user);
+        var savedUser = userRepository.save(user);
         return savedUser;
     }
 
     public Map<String, String> authenticate(AuthRequest req) {
-        var user = usersDB.findUserByUsername(req.getUsername()).orElseThrow();
+        var user = userRepository.findByUsername(req.getUsername()).orElseThrow(
+                () -> new UsernameNotFoundException(null, null));
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
 
         // Revoke active jwt tokens already stored in the DB for the user
         revokeAllUserTokens(user);
 
-        var jwt = jwtService.generateJwt(user);
-        var refreshJwt = jwtService.generateRefreshJwt(user);
+        var jwt = jwtProvider.generateJwt(user);
+        var refreshJwt = jwtProvider.generateRefreshJwt(user);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access", jwt);
         tokens.put("refresh", refreshJwt);
@@ -68,11 +71,11 @@ public class AuthService {
 
     private void saveUserToken(User user, String token) {
         var jwt = Token.build(null, token, null, false, false, user);
-        tokensDB.save(jwt);
+        tokenRepository.save(jwt);
     }
 
     private void revokeAllUserTokens(User user) {
-        List<Token> validJwts = tokensDB.findValidTokensByToken(user.getId());
+        List<Token> validJwts = tokenRepository.findValidTokensByToken(user.getId());
         if (validJwts.isEmpty()) {
             return;
         }
@@ -80,7 +83,7 @@ public class AuthService {
             token.setExpired(true);
             token.setRevoked(true);
         });
-        tokensDB.saveAll(validJwts);
+        tokenRepository.saveAll(validJwts);
     }
 
     public Map<String, String> refresh(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -91,15 +94,16 @@ public class AuthService {
 
         String refreshJwt = authHeader.substring(7);
 
-        String username = jwtService.getUsernameClaim(refreshJwt);
+        String username = jwtProvider.getUsernameClaim(refreshJwt);
 
         if (username != null) {
-            var user = usersDB.findUserByUsername(username).orElseThrow();
+            var user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UserNotFoundException(username));
 
-            if (jwtService.isJwtValid(refreshJwt, user)) {
+            if (jwtProvider.validateJwtToken(refreshJwt, user)) {
                 revokeAllUserTokens(user);
                 // Generate Access Token
-                var accessToken = jwtService.generateJwt(user);
+                var accessToken = jwtProvider.generateJwt(user);
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access", accessToken);
                 tokens.put("refresh", refreshJwt);

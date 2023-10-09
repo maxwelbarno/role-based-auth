@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
-public class JwtService {
+public class JwtProvider {
 
     @Value("${application.security.jwt.secret-key}")
     private String jwtSecret;
@@ -48,16 +49,22 @@ public class JwtService {
                 .sign(getAlgorithm());
     }
 
-    private Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(jwtSecret);
+    public boolean validateJwtToken(String jwt, UserDetails userDetails) {
+        try {
+            return getUsernameClaim(jwt).equals(userDetails.getUsername()) &&
+                    !isJwtExpired(jwt);
+        } catch (JWTVerificationException | IllegalArgumentException e) {
+
+        }
+        return false;
     }
 
-    public boolean isJwtValid(String jwt, UserDetails userDetails) {
-        String username = getUsernameClaim(jwt);
-        return username.equals(userDetails.getUsername()) && !isJwtExpired(jwt);
+    private Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(jwtSecret);
     }
 
     private boolean isJwtExpired(String jwt) {
         return JWT.decode(jwt).getExpiresAt().before(new Date());
     }
+
 }

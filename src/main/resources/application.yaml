@@ -45,7 +45,7 @@ application:
     jwt:
       secret-key: ${JWT_SECRET}
       expiration: 120000 #two minutes
-      refresh: 
+      refresh:
         expiration: 86400000 #one day
   jwt-expiration-milliseconds: 120000
 

@@ -6,6 +6,6 @@ INSERT INTO `spring_boot_security`.`roles` (`id`, `name`) VALUES (0, 'ADMIN');
 
 -- ADD ADMIN ROLE TO USER
 SELECT `u`.`id`, `u`.`name`, `u`.`password`, `u`.`username` FROM `users` `u` WHERE `u`.`username`='admin';
-SELECT `r0`.`user_id`, `r1`.`id`, `r1`.`name` FROM `users_roles` `r0` JOIN `roles` `r1` ON `r1`.`id`=`r0`.`roles_id` WHERE `r0`.`user_id`=0;
+SELECT `r0`.`user_id`, `r1`.`id`, `r1`.`name` FROM `users_roles` `r0` JOIN `roles` `r1` ON `r1`.`id`=`r0`.`role_id` WHERE `r0`.`user_id`=0;
 SELECT `r0`.`id`, `r0`.`name` FROM `roles` `r0` WHERE `r0`.`name`='ADMIN';
-INSERT INTO `users_roles` (`user_id`, `roles_id`) VALUES (0, 0);
+INSERT INTO `users_roles` (`user_id`, `role_id`) VALUES (0, 0);

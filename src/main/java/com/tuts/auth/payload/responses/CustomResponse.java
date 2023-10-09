@@ -2,8 +2,6 @@ package com.tuts.auth.payload.responses;
 
 import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -14,29 +12,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "build")
 public class CustomResponse {
-    private HttpStatus status;
+    private int status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime timestamp = LocalDateTime.now();
     private String message;
     private Object data;
 
-    public CustomResponse(String message, Object data, HttpStatus status) {
+    public CustomResponse(String message, Object data, int status) {
         this.message = message;
         this.data = data;
         this.status = status;
     }
 
-    public CustomResponse(String message, HttpStatus status) {
+    public CustomResponse(String message, int status) {
         this.message = message;
         this.status = status;
     }
 
-    public CustomResponse(Object data, HttpStatus status) {
+    public CustomResponse(Object data, int status) {
         this.data = data;
         this.status = status;
     }
 
-    public CustomResponse(HttpStatus status) {
+    public CustomResponse(int status) {
         this.status = status;
     }
 

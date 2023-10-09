@@ -21,12 +21,12 @@ import lombok.AllArgsConstructor;
 public class AppConfig {
 
     @Autowired
-    private UserRepository usersDB;
+    private UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
 
-        return username -> usersDB.findUserByUsername(username)
+        return username -> userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not Found in DB"));
     }
 
