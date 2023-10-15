@@ -10,9 +10,9 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tuts</groupId>
-    <artifactId>security</artifactId>
+    <artifactId>role-based-auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>security</name>
+    <name>role-based-auth</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>21</java.version>

@@ -41,3 +41,5 @@ build/
 error.log
 error.log.*
 env.properties
+
+.m2
