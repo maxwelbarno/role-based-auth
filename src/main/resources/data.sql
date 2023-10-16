@@ -1,14 +1,3 @@
--- CREATE USER
-CREATE USER IF NOT EXISTS 'auth_user' @'localhost' IDENTIFIED BY "auth123";
-
--- CREATE DATABASE 
-CREATE DATABASE IF NOT EXISTS role_based_authorization;
-
--- GRANT PRIVILEGES TO USER
-GRANT ALL PRIVILEGES ON role_based_authorization.* TO 'auth_user' @'localhost';
-
-USE role_based_authorization;
-
 -- CREATE USER IF NOT EXISTS
 INSERT
     IGNORE INTO users
