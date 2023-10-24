@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.tuts</groupId>
     <artifactId>role-based-auth</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>v1</version>
     <name>role-based-auth</name>
     <description>Demo project for Spring Boot</description>
     <properties>

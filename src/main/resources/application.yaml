@@ -1,20 +1,16 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
-
   datasource:
-    url: jdbc:mysql://${HOST}:${DB_PORT}/${DB}
-    username: ${DB_USER}
+    url: jdbc:mysql://${DB_HOST}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
         format-sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
 
   sql:
