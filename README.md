@@ -11,7 +11,12 @@ This application demonstrates the capabilities of Spring Security in authenticat
 - Kubernetes (minikube)
 - Maven 3.9.5
 - MySQL 8.0.34
-- JWT
+
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=java,spring, docker,kubernetes,maven,mysql" />
+  </a>
+</p>
 
 ## Setup
 
@@ -50,24 +55,35 @@ To run this project locally
 
    The above command will create a `mysql-client` and present a mysql prompt in the terminal like:
 
-   ```sh
-   mysql>
-   ```
+   ![Screenshot from 2023-10-25 09-44-34](https://github.com/ywalakamar/role-based-auth/assets/4771875/b9ad8205-e402-4ed3-a9c0-168578044114)
+
+   You can now issue an SQL command and get responses like:
+   ![Screenshot from 2023-10-25 09-41-09](https://github.com/ywalakamar/role-based-auth/assets/4771875/782d5a84-c4ae-4d9e-b35e-725388b89fba)
 
 6. Navigate back to the root directory where the `Dockerfile` is domiciled and build the application image using docker by running:
 
    ```sh
    cd ..
-   docker build -t <your-dockerhub-username>/springboot-k8s-mysql:latest .
+   docker build -t <your-dockerhub-username>/springboot-k8s-mysql:v1 .
    ```
 
 7. Setup the main application by navigating again to the `k8s` folder and issue the following command in the terminal within k8s folder
 
    ```sh
-   kubectl apply -f deployment.yaml
+   kubectl apply -f app-deployment.yaml
    ```
 
-8. OPTIONAL: clean kubernetes workspace by running the following commands in that order:
+8. You can check the state of your pods, deployments and services by running the following commands in the terminal
+
+```sh
+   kubectl get pods
+   kubectl get deployments
+   kubectl get services
+```
+
+![Screenshot from 2023-10-25 09-48-41](https://github.com/ywalakamar/role-based-auth/assets/4771875/8d042fbf-2b47-4bd0-9262-f91b2c22d3f9)
+
+9. OPTIONAL: clean kubernetes workspace by running the following commands in that order:
 
    ```sh
    kubectl delete deployments --all

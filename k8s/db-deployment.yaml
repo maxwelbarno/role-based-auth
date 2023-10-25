@@ -75,7 +75,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: db-conf
-                  key: name
+                  key: database
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:

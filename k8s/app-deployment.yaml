@@ -24,7 +24,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: db-conf
-                  key: name
+                  key: database
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
