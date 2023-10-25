@@ -12,9 +12,9 @@ This application demonstrates the capabilities of Spring Security in authenticat
 - Maven 3.9.5
 - MySQL 8.0.34
 
-<p align="center">
+<p align="left">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=java,spring, docker,kubernetes,maven,mysql" />
+    <img src="https://skillicons.dev/icons?i=java,spring,docker,kubernetes,maven,mysql" />
   </a>
 </p>
 
